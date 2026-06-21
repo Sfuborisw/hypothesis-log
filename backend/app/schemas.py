@@ -68,3 +68,41 @@ class HypothesisRead(BaseModel):
     updated_at: datetime
     signals: list[SignalRead]
     model_config = ConfigDict(from_attributes=True)
+
+# ---------- Analysis ----------
+class OverallStats(BaseModel):
+    total_hypotheses: int
+    verified: int
+    pending: int
+    hits: int
+    misses: int
+    hit_rate: Optional[float]
+    avg_price_change_pct: Optional[float]
+
+
+class SignalBreakdown(BaseModel):
+    signal_code: str
+    signal_name: str
+    n: int
+    hits: int
+    hit_rate: float
+
+
+class ConfidenceBreakdown(BaseModel):
+    confidence: int
+    n: int
+    hits: int
+    hit_rate: float
+
+
+class SignalCorrelation(BaseModel):
+    signal_code: str
+    signal_name: str
+    n: int
+    corr_with_hit: Optional[float]
+
+
+class CorrelationResponse(BaseModel):
+    per_signal: list[SignalCorrelation]
+    matrix: dict[str, dict[str, Optional[float]]]
+    note: Optional[str] = None
