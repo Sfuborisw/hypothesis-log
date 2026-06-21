@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import models  # noqa: F401  (register tables before create_all)
 from app.database import Base, engine
+from app.routers import hypotheses, signals
 
 # Dev convenience: create tables on startup.
 # Will swap to Alembic migrations once the schema stabilises.
@@ -17,6 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(signals.router)
+app.include_router(hypotheses.router)
 
 @app.get("/health")
 def health():
