@@ -4,6 +4,7 @@ import type { Hypothesis, OverallStats, Signal } from "./types";
 import { OverallReadout } from "./components/OverallReadout";
 import { HypothesisTable } from "./components/HypothesisTable";
 import { LogHypothesisForm } from "./components/LogHypothesisForm";
+import { PendingList } from "./components/PendingList";
 
 export default function App() {
   const signals = useAsync<Signal[]>(() => api.listSignals(), []);
@@ -14,6 +15,8 @@ export default function App() {
     overall.reload();
     hyps.reload();
   }
+
+  const pending = (hyps.data ?? []).filter((h) => h.status === "pending");
 
   return (
     <div className="app">
@@ -39,6 +42,20 @@ export default function App() {
         {signals.error && <p className="state state--error">{signals.error}</p>}
         {signals.data && (
           <LogHypothesisForm signals={signals.data} onCreated={refreshData} />
+        )}
+      </section>
+
+      <section className="panel">
+        <h2 className="panel__title">
+          Awaiting verification
+          {pending.length > 0 && (
+            <span className="panel__count">{pending.length}</span>
+          )}
+        </h2>
+        {hyps.loading && <p className="state">Loading…</p>}
+        {hyps.error && <p className="state state--error">{hyps.error}</p>}
+        {hyps.data && (
+          <PendingList pending={pending} onVerified={refreshData} />
         )}
       </section>
 
