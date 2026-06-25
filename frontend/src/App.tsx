@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { api } from "./api";
 import { useAsync } from "./useAsync";
 import type { Hypothesis, OverallStats, Signal } from "./types";
@@ -5,15 +6,18 @@ import { OverallReadout } from "./components/OverallReadout";
 import { HypothesisTable } from "./components/HypothesisTable";
 import { LogHypothesisForm } from "./components/LogHypothesisForm";
 import { PendingList } from "./components/PendingList";
+import { Dashboard } from "./components/Dashboard";
 
 export default function App() {
   const signals = useAsync<Signal[]>(() => api.listSignals(), []);
   const overall = useAsync<OverallStats>(() => api.overall(), []);
   const hyps = useAsync<Hypothesis[]>(() => api.listHypotheses(), []);
+  const [version, setVersion] = useState(0);
 
   function refreshData() {
     overall.reload();
     hyps.reload();
+    setVersion((v) => v + 1); // re-fetch the dashboard analytics
   }
 
   const pending = (hyps.data ?? []).filter((h) => h.status === "pending");
@@ -69,6 +73,14 @@ export default function App() {
           </p>
         )}
         {overall.data && <OverallReadout stats={overall.data} />}
+      </section>
+
+      <section className="panel">
+        <h2 className="panel__title">Analysis</h2>
+        <Dashboard
+          version={version}
+          overallHitRate={overall.data?.hit_rate ?? null}
+        />
       </section>
 
       <section className="panel">
