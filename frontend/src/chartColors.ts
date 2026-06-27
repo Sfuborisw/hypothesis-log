@@ -11,7 +11,7 @@ export function corrColor(v: number | null): string {
   if (v == null) return "var(--paper)";
   const strength = Math.round(Math.min(Math.abs(v), 1) * 70);
   const base = v >= 0 ? "var(--accent)" : "var(--miss)";
-  return `color-mix(in srgb, ${base} ${strength}%, white)`;
+  return `color-mix(in srgb, ${base} ${strength}%, var(--mix-base))`;
 }
 
 /** Readable text color over a correlation cell. */

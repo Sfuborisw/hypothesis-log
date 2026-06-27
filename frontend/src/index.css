@@ -13,6 +13,12 @@
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   --radius: 10px;
+
+  /* theming helpers (overridden in dark) */
+  --mix-base: #ffffff; /* what tints mix toward; white in light */
+  --tip-bg: var(--ink);
+  --tip-fg: #ffffff;
+  --tip-muted: #cfd3dc;
 }
 
 * {
@@ -181,17 +187,17 @@ body {
 
 .badge--hit {
   color: var(--hit);
-  background: color-mix(in srgb, var(--hit) 12%, white);
+  background: color-mix(in srgb, var(--hit) 12%, var(--mix-base));
 }
 
 .badge--miss {
   color: var(--miss);
-  background: color-mix(in srgb, var(--miss) 12%, white);
+  background: color-mix(in srgb, var(--miss) 12%, var(--mix-base));
 }
 
 .badge--pending {
   color: var(--pending);
-  background: color-mix(in srgb, var(--pending) 14%, white);
+  background: color-mix(in srgb, var(--pending) 14%, var(--mix-base));
 }
 
 .badge--muted {
@@ -342,7 +348,7 @@ body {
 
 .chip--active {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, white);
+  background: color-mix(in srgb, var(--accent) 10%, var(--mix-base));
   color: var(--accent);
   font-weight: 600;
 }
@@ -409,7 +415,7 @@ body {
 
 .queue__item--due {
   border-color: color-mix(in srgb, var(--pending) 50%, var(--line));
-  background: color-mix(in srgb, var(--pending) 5%, white);
+  background: color-mix(in srgb, var(--pending) 5%, var(--mix-base));
 }
 
 .queue__head {
@@ -513,8 +519,8 @@ body {
 
 /* recharts tooltip */
 .tip {
-  background: var(--ink);
-  color: #fff;
+  background: var(--tip-bg);
+  color: var(--tip-fg);
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 12px;
@@ -526,7 +532,7 @@ body {
 }
 
 .tip__row {
-  color: #cfd3dc;
+  color: var(--tip-muted);
 }
 
 /* correlation heatmap */
@@ -606,4 +612,57 @@ body {
   .dash__grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ===========================================================
+   Dark theme — deep slate + violet-blue accent (tech feel).
+   Activated by [data-theme="dark"] on <html>.
+   =========================================================== */
+:root[data-theme="dark"] {
+  --paper: #0c0d14;
+  --surface: #15161f;
+  --ink: #e9eaf2;
+  --muted: #8b90a6;
+  --line: #262838;
+  --accent: #7c6dff; /* violet-blue */
+  --hit: #34d27f;
+  --miss: #f0625b;
+  --pending: #e0a93f;
+
+  --mix-base: #15161f; /* mix toward surface, not white */
+  --tip-bg: #232539;
+  --tip-fg: #ffffff;
+  --tip-muted: #aeb3c9;
+}
+
+:root[data-theme="dark"] body {
+  /* subtle violet glow so the dark base doesn't read as flat black */
+  background-image: radial-gradient(
+    900px 500px at 80% -10%,
+    rgba(124, 109, 255, 0.1),
+    transparent 60%
+  );
+  background-attachment: fixed;
+}
+
+/* ---- header actions + icon button ---- */
+.header__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  width: 38px;
+  height: 38px;
+  color: var(--ink);
+}
+
+.btn--icon:hover {
+  background: var(--paper);
 }

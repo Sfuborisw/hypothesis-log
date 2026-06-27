@@ -7,12 +7,15 @@ import { HypothesisTable } from "./components/HypothesisTable";
 import { LogHypothesisForm } from "./components/LogHypothesisForm";
 import { PendingList } from "./components/PendingList";
 import { Dashboard } from "./components/Dashboard";
+import { ThemeToggle } from "./components/ThemeToggle";
+import { useTheme } from "./useTheme";
 
 export default function App() {
   const signals = useAsync<Signal[]>(() => api.listSignals(), []);
   const overall = useAsync<OverallStats>(() => api.overall(), []);
   const hyps = useAsync<Hypothesis[]>(() => api.listHypotheses(), []);
   const [version, setVersion] = useState(0);
+  const { theme, toggle } = useTheme();
 
   function refreshData() {
     overall.reload();
@@ -32,12 +35,12 @@ export default function App() {
             Turn trading gut-feel into a measured edge.
           </p>
         </div>
-        <button
-          className="btn btn--ghost header__refresh"
-          onClick={refreshData}
-        >
-          Refresh
-        </button>
+        <div className="header__actions">
+          <ThemeToggle theme={theme} onToggle={toggle} />
+          <button className="btn btn--ghost" onClick={refreshData}>
+            Refresh
+          </button>
+        </div>
       </header>
 
       <section className="panel">
