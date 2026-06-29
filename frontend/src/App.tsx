@@ -72,7 +72,7 @@ export default function App() {
         {overall.error && (
           <p className="state state--error">
             Can’t reach the API ({overall.error}). Is the backend running on{" "}
-            <code>http://localhost:8000</code>?
+            <code>http://localhost:8001</code>?
           </p>
         )}
         {overall.data && <OverallReadout stats={overall.data} />}
