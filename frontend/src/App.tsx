@@ -90,7 +90,9 @@ export default function App() {
         <h2 className="panel__title">Hypotheses</h2>
         {hyps.loading && <p className="state">Loading…</p>}
         {hyps.error && <p className="state state--error">{hyps.error}</p>}
-        {hyps.data && <HypothesisTable hypotheses={hyps.data} />}
+        {hyps.data && (
+          <HypothesisTable hypotheses={hyps.data} onDeleted={refreshData} />
+        )}
       </section>
     </div>
   );

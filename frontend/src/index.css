@@ -678,3 +678,45 @@ body {
 .btn--icon:hover {
   background: var(--paper);
 }
+
+/* ---- table actions / delete ---- */
+.htable__actions {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.iconbtn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconbtn:hover {
+  color: var(--miss);
+  background: color-mix(in srgb, var(--miss) 12%, var(--mix-base));
+}
+
+.rowconfirm {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn--danger {
+  background: var(--miss);
+  border-color: var(--miss);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn--danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
