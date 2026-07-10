@@ -71,8 +71,8 @@ export default function App() {
         {overall.loading && <p className="state">Loading stats…</p>}
         {overall.error && (
           <p className="state state--error">
-            Can’t reach the API ({overall.error}). Is the backend running on{" "}
-            <code>http://localhost:8001</code>?
+            Can't reach the API ({overall.error}). The demo backend may be
+            waking up from sleep — please wait ~30 seconds and hit Refresh.
           </p>
         )}
         {overall.data && <OverallReadout stats={overall.data} />}
