@@ -5,4 +5,4 @@ pydantic-settings
 pandas
 yfinance
 apscheduler
-
+psycopg[binary]
