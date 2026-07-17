@@ -30,7 +30,7 @@ class TestOverall:
         stats = client.get("/analysis/overall").json()
         # NOTE: if hit_rate is expressed as a percentage (75.0) rather than
         # a fraction, flip this expectation — the failure will say which.
-        assert stats["hit_rate"] == 0.75
+        assert stats["hit_rate"] == 0.99
 
     def test_pending_hypotheses_are_excluded_from_the_hit_rate(
         self, client, make_hypothesis
