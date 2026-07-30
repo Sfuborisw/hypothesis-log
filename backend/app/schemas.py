@@ -45,6 +45,17 @@ class HypothesisVerify(BaseModel):
     verification_price: float = Field(gt=0)
     post_notes: Optional[str] = None
 
+class HypothesisUpdate(BaseModel):
+    # All optional: only the fields actually sent get changed (partial update).
+    ticker: Optional[str] = None
+    action: Optional[Action] = None
+    entry_price: Optional[float] = Field(default=None, gt=0)
+    predicted_direction: Optional[Direction] = None
+    confidence: Optional[int] = Field(default=None, ge=1, le=5)
+    timeframe: Optional[Timeframe] = None
+    reasoning: Optional[str] = None
+    hypothesis_date: Optional[date] = None
+    signal_ids: Optional[list[int]] = None
 
 class HypothesisRead(BaseModel):
     id: int

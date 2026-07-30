@@ -88,6 +88,39 @@ def verify_hypothesis(
     db.refresh(hyp)
     return hyp
 
+@router.patch("/{hypothesis_id}", response_model=schemas.HypothesisRead)
+def update_hypothesis(
+    hypothesis_id: int, payload: schemas.HypothesisUpdate, db: Session = Depends(get_db)
+):
+    hyp = db.get(models.Hypothesis, hypothesis_id)
+    if not hyp:
+        raise HTTPException(404, f"Hypothesis {hypothesis_id} not found")
+    # Editing a verified hypothesis would let you rewrite a prediction after
+    # seeing the outcome, corrupting the hit-rate analysis. Pending only.
+    if hyp.status != "pending":
+        raise HTTPException(
+            409, "Only pending hypotheses can be edited (a verified call is locked)."
+        )
+
+    data = payload.model_dump(exclude_unset=True)  # only touch fields actually sent
+
+    if "signal_ids" in data:
+        hyp.signals = _resolve_signals(db, data.pop("signal_ids") or [])
+
+    for field, value in data.items():
+        if field == "ticker" and value is not None:
+            value = value.upper()
+        setattr(hyp, field, value)
+
+    # Recompute the verification due-date if its inputs changed.
+    if "timeframe" in data or "hypothesis_date" in data:
+        hyp.target_verification_date = timeframe_to_target_date(
+            hyp.hypothesis_date, hyp.timeframe
+        )
+
+    db.commit()
+    db.refresh(hyp)
+    return hyp
 
 @router.delete("/{hypothesis_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_hypothesis(hypothesis_id: int, db: Session = Depends(get_db)):
