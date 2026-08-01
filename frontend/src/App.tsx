@@ -61,8 +61,12 @@ export default function App() {
         </h2>
         {hyps.loading && <p className="state">Loading…</p>}
         {hyps.error && <p className="state state--error">{hyps.error}</p>}
-        {hyps.data && (
-          <PendingList pending={pending} onVerified={refreshData} />
+        {hyps.data && signals.data && (
+          <PendingList
+            pending={pending}
+            signals={signals.data}
+            onChanged={refreshData}
+          />
         )}
       </section>
 
