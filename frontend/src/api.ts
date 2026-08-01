@@ -3,6 +3,7 @@ import type {
   SignalCreate,
   Hypothesis,
   HypothesisCreate,
+  HypothesisUpdate,
   HypothesisVerify,
   OverallStats,
   SignalBreakdown,
@@ -64,6 +65,11 @@ export const api = {
   createHypothesis: (body: HypothesisCreate) =>
     request<Hypothesis>("/hypotheses", {
       method: "POST",
+      body: JSON.stringify(body),
+    }),
+  updateHypothesis: (id: number, body: HypothesisUpdate) =>
+    request<Hypothesis>(`/hypotheses/${id}`, {
+      method: "PATCH",
       body: JSON.stringify(body),
     }),
   verifyHypothesis: (id: number, body: HypothesisVerify) =>

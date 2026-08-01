@@ -63,6 +63,18 @@ export interface HypothesisVerify {
   post_notes?: string | null;
 }
 
+export interface HypothesisUpdate {
+  ticker?: string;
+  action?: Action;
+  entry_price?: number;
+  predicted_direction?: Direction;
+  confidence?: number;
+  timeframe?: Timeframe;
+  reasoning?: string | null;
+  hypothesis_date?: string | null;
+  signal_ids?: number[];
+}
+
 export interface OverallStats {
   total_hypotheses: number;
   verified: number;
