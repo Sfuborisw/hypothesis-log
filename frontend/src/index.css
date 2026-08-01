@@ -733,6 +733,8 @@ body {
   padding: 48px 16px;
   overflow-y: auto;
   z-index: 100;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .modal {
@@ -742,6 +744,27 @@ body {
   width: 100%;
   max-width: 560px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.modal-overlay--open {
+  opacity: 1;
+}
+
+.modal--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal {
+    transition: none;
+  }
 }
 
 .modal__head {

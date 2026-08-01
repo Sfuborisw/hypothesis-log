@@ -1,31 +1,45 @@
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 interface Props {
   title: string;
   onClose: () => void;
-  children: ReactNode;
+  /** children receive an animated `close()` — call it instead of onClose
+   *  so every dismissal (buttons included) plays the fade-out. */
+  children: (close: () => void) => ReactNode;
 }
 
-/** Overlay modal: closes on backdrop click, Esc, or the ✕ button.
- *  Locks background scroll while open. */
+const ANIM_MS = 200;
+
 export function Modal({ title, onClose, children }: Props) {
+  const [open, setOpen] = useState(false);
+
+  const requestClose = useCallback(() => {
+    setOpen(false);
+    window.setTimeout(onClose, ANIM_MS); // unmount only after the fade-out
+  }, [onClose]);
+
   useEffect(() => {
+    const raf = requestAnimationFrame(() => setOpen(true)); // trigger fade-in
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") requestClose();
     }
     document.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
+      cancelAnimationFrame(raf);
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [onClose]);
+  }, [requestClose]);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      className={`modal-overlay ${open ? "modal-overlay--open" : ""}`}
+      onClick={requestClose}
+    >
       <div
-        className="modal"
+        className={`modal ${open ? "modal--open" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -35,7 +49,7 @@ export function Modal({ title, onClose, children }: Props) {
           <h3 className="modal__title">{title}</h3>
           <button
             className="iconbtn"
-            onClick={onClose}
+            onClick={requestClose}
             aria-label="Close"
             title="Close"
           >
@@ -52,7 +66,7 @@ export function Modal({ title, onClose, children }: Props) {
             </svg>
           </button>
         </div>
-        <div className="modal__body">{children}</div>
+        <div className="modal__body">{children(requestClose)}</div>
       </div>
     </div>
   );
