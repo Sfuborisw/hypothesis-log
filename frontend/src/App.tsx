@@ -4,10 +4,10 @@ import { useAsync } from "./useAsync";
 import type { Hypothesis, OverallStats, Signal } from "./types";
 import { OverallReadout } from "./components/OverallReadout";
 import { HypothesisTable } from "./components/HypothesisTable";
-import { LogHypothesisForm } from "./components/LogHypothesisForm";
 import { PendingList } from "./components/PendingList";
 import { Dashboard } from "./components/Dashboard";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { CreateHypothesisModal } from "./components/CreateHypothesisModal";
 import { useTheme } from "./useTheme";
 
 export default function App() {
@@ -15,12 +15,13 @@ export default function App() {
   const overall = useAsync<OverallStats>(() => api.overall(), []);
   const hyps = useAsync<Hypothesis[]>(() => api.listHypotheses(), []);
   const [version, setVersion] = useState(0);
+  const [showCreate, setShowCreate] = useState(false);
   const { theme, toggle } = useTheme();
 
   function refreshData() {
     overall.reload();
     hyps.reload();
-    setVersion((v) => v + 1); // re-fetch the dashboard analytics
+    setVersion((v) => v + 1);
   }
 
   const pending = (hyps.data ?? []).filter((h) => h.status === "pending");
@@ -43,14 +44,15 @@ export default function App() {
         </div>
       </header>
 
-      <section className="panel">
-        <h2 className="panel__title">Log a hypothesis</h2>
-        {signals.loading && <p className="state">Loading signals…</p>}
-        {signals.error && <p className="state state--error">{signals.error}</p>}
-        {signals.data && (
-          <LogHypothesisForm signals={signals.data} onCreated={refreshData} />
-        )}
-      </section>
+      <div className="create-bar">
+        <button
+          className="btn btn--primary btn--cta"
+          onClick={() => setShowCreate(true)}
+          disabled={!signals.data}
+        >
+          <span className="btn__plus">+</span> Log a hypothesis
+        </button>
+      </div>
 
       <section className="panel">
         <h2 className="panel__title">
@@ -75,8 +77,8 @@ export default function App() {
         {overall.loading && <p className="state">Loading stats…</p>}
         {overall.error && (
           <p className="state state--error">
-            Can't reach the API ({overall.error}). The demo backend may be
-            waking up from sleep — please wait ~30 seconds and hit Refresh.
+            Can’t reach the API ({overall.error}). Is the backend running on{" "}
+            <code>http://localhost:8001</code>?
           </p>
         )}
         {overall.data && <OverallReadout stats={overall.data} />}
@@ -98,6 +100,14 @@ export default function App() {
           <HypothesisTable hypotheses={hyps.data} onDeleted={refreshData} />
         )}
       </section>
+
+      {showCreate && signals.data && (
+        <CreateHypothesisModal
+          signals={signals.data}
+          onClose={() => setShowCreate(false)}
+          onCreated={refreshData}
+        />
+      )}
     </div>
   );
 }

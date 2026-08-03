@@ -863,3 +863,17 @@ body {
   line-height: 1;
   color: var(--muted);
 }
+
+/* ---- create CTA ---- */
+.create-bar {
+  margin-bottom: 20px;
+}
+.btn--cta {
+  font-size: 15px;
+  padding: 12px 22px;
+  border-radius: 10px;
+}
+.btn__plus {
+  font-weight: 700;
+  margin-right: 2px;
+}
